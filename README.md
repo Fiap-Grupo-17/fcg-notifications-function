@@ -2,7 +2,7 @@
 
 Azure Function (.NET 8 Isolated) que **substitui o container 24/7** da `fcg-notifications-api`.
 
-É o entregável da Fase 3: *Migrar para Serverless*. O gatilho de negócio é a **fila do RabbitMQ**, não HTTP e não o Kong.
+É o entregável da Fase 3: *Migrar para Serverless*.
 
 
 ```
@@ -35,12 +35,9 @@ A lógica é a mesma dos consumers da Fase 2. O MassTransit publica um **envelop
 - Docker Desktop (RabbitMQ + APIs da Fase 2)
 - Repositório `fcg-contracts` no mesmo diretório pai (ProjectReference)
 
-## 1. Conta Azure de estudante (sua, não a do Woto)
-
-1. Use o e-mail **institucional da FIAP** (`@fiap.com.br` / `@aluno.fiap.com.br`). Gmail **não** passa na verificação de estudante.
-2. Abra [Azure for Students](https://azure.microsoft.com/free/students/) e verifique com SheerID.
-3. Se a FIAP não passar no SheerID, use o [trial gratuito](https://azure.microsoft.com/free/) (cartão só para validar; o Consumption da Function cabe nos créditos).
-4. Confirme:
+## 1. Conta Azure
+1. Se a FIAP não passar no SheerID, use o [trial gratuito](https://azure.microsoft.com/free/) (cartão só para validar; o Consumption da Function cabe nos créditos).
+2. Confirme:
 
 ```bash
 az login
