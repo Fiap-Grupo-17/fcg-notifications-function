@@ -1,6 +1,6 @@
 # FCG Notifications Function
 
-Azure Function (.NET 8 Isolated) que **substitui o container 24/7** da `fcg-notifications-api`.
+Azure Function (.NET 8 in-process) que **substitui o container 24/7** da `fcg-notifications-api`.
 
 É o entregável da Fase 3: *Migrar para Serverless*.
 
@@ -21,8 +21,8 @@ Cliente HTTP ──► Kong local :8000 ──► UsersAPI / CatalogAPI
 
 | Function | Fila (MassTransit) | Ação |
 |---|---|---|
-| `OnUserCreated` | `UserCreated` | loga e-mail de boas-vindas |
-| `OnPaymentProcessed` | `PaymentProcessed` | loga confirmação ou recusa de compra |
+| `OnUserCreated` | `notifications-user-created` | loga e-mail de boas-vindas |
+| `OnPaymentProcessed` | `notifications-payment-processed` | loga confirmação ou recusa de compra |
 | `Health` | HTTP `GET /api/health` | só para ping de deploy |
 
 A lógica é a mesma dos consumers da Fase 2. O MassTransit publica um **envelope**; o código lê a propriedade `message`.
@@ -59,9 +59,14 @@ cd ..\fcg-notifications-function\src\FCG.Notifications.Functions
 func start
 ```
 
-Confira as filas em http://localhost:15672 (`guest` / `guest`). Os nomes padrão do MassTransit são `UserCreated` e `PaymentProcessed`. Se forem outros, altere `UserCreatedQueue` / `PaymentProcessedQueue` no `local.settings.json`.
+Antes do `func start`, crie as filas (o trigger da Azure **não** cria sozinho):
 
-Se as filas não existirem (container antigo nunca subiu), importe `infra/rabbitmq-definitions.json` no Management UI (Overview → Import definitions).
+```powershell
+cd C:\Users\conta\OneDrive\Documentos\GitHub\fcg-notifications-function
+powershell -File infra\setup-rabbitmq.ps1
+```
+
+Confira em http://localhost:15672 (`guest` / `guest`) → **Queues**: `notifications-user-created` e `notifications-payment-processed`.
 
 **Teste:** `POST /api/usuarios/registrar` no UsersAPI (`http://localhost:8081/swagger` ou via Kong `:8000`). No terminal da Function deve aparecer `[NOTIFICAÇÃO] ✉ E-mail de boas-vindas`.
 
