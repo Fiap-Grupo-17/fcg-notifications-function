@@ -1,35 +1,24 @@
-using System.Net;
-using System.Text.Json;
-using Microsoft.Azure.Functions.Worker;
-using Microsoft.Azure.Functions.Worker.Http;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 
 namespace FCG.Notifications.Functions;
 
-/// <summary>
-/// Health check opcional para validar o deploy. O gatilho de negócio é o RabbitMQ, não HTTP.
-/// </summary>
 public class Health
 {
-    private readonly ILogger<Health> _logger;
-
-    public Health(ILogger<Health> logger) => _logger = logger;
-
-    [Function(nameof(Health))]
-    public HttpResponseData Run(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "health")]
-        HttpRequestData req)
+    [FunctionName(nameof(Health))]
+    public IActionResult Run(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "health")] HttpRequest req,
+        ILogger log)
     {
-        _logger.LogInformation("Health check da Function de notificações.");
-
-        var response = req.CreateResponse(HttpStatusCode.OK);
-        response.Headers.Add("Content-Type", "application/json; charset=utf-8");
-        response.WriteString(JsonSerializer.Serialize(new
+        log.LogInformation("Health check da Function de notificações.");
+        return new OkObjectResult(new
         {
             status = "ok",
             service = "fcg-notifications-function",
             timestamp = DateTime.UtcNow
-        }));
-        return response;
+        });
     }
 }

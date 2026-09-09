@@ -1,28 +1,22 @@
 using FCG.Contracts.Events;
-using Microsoft.Azure.Functions.Worker;
+using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 
 namespace FCG.Notifications.Functions;
 
-/// <summary>
-/// Substitui o PaymentProcessedConsumer: dispara quando o PaymentsAPI publica PaymentProcessedEvent.
-/// </summary>
 public class OnPaymentProcessed
 {
-    private readonly ILogger<OnPaymentProcessed> _logger;
-
-    public OnPaymentProcessed(ILogger<OnPaymentProcessed> logger) => _logger = logger;
-
-    [Function(nameof(OnPaymentProcessed))]
+    [FunctionName(nameof(OnPaymentProcessed))]
     public void Run(
         [RabbitMQTrigger("%PaymentProcessedQueue%", ConnectionStringSetting = "RabbitMQConnection")]
-        string body)
+        string input,
+        ILogger log)
     {
-        var evt = MassTransitEnvelope.Deserialize<PaymentProcessedEvent>(body);
+        var evt = MassTransitEnvelope.Deserialize<PaymentProcessedEvent>(input);
 
         if (evt.Status == "Approved")
         {
-            _logger.LogInformation(
+            log.LogInformation(
                 "[NOTIFICAÇÃO] ✉ E-mail de confirmação de compra ENVIADO" +
                 " | UserId: {UserId}" +
                 " | Jogo: {GameName}" +
@@ -33,7 +27,7 @@ public class OnPaymentProcessed
             return;
         }
 
-        _logger.LogWarning(
+        log.LogWarning(
             "[NOTIFICAÇÃO] ✉ E-mail de pagamento recusado ENVIADO" +
             " | UserId: {UserId}" +
             " | Jogo: {GameName}" +

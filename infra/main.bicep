@@ -9,10 +9,10 @@ param functionAppName string
 param rabbitMqConnection string
 
 @description('MassTransit queue for UserCreatedEvent')
-param userCreatedQueue string = 'UserCreated'
+param userCreatedQueue string = 'notifications-user-created'
 
 @description('MassTransit queue for PaymentProcessedEvent')
-param paymentProcessedQueue string = 'PaymentProcessed'
+param paymentProcessedQueue string = 'notifications-payment-processed'
 
 var storageAccountName = 'st${uniqueString(resourceGroup().id, functionAppName)}'
 var appInsightsName = 'appi-${functionAppName}'
@@ -66,7 +66,7 @@ resource functionApp 'Microsoft.Web/sites@2023-01-01' = {
     serverFarmId: hostingPlan.id
     httpsOnly: true
     siteConfig: {
-      linuxFxVersion: 'DOTNET-ISOLATED|8.0'
+      linuxFxVersion: 'DOTNET|8.0'
       ftpsState: 'Disabled'
       minTlsVersion: '1.2'
       appSettings: [
@@ -80,7 +80,11 @@ resource functionApp 'Microsoft.Web/sites@2023-01-01' = {
         }
         {
           name: 'FUNCTIONS_WORKER_RUNTIME'
-          value: 'dotnet-isolated'
+          value: 'dotnet'
+        }
+        {
+          name: 'FUNCTIONS_INPROC_NET8_ENABLED'
+          value: '1'
         }
         {
           name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'

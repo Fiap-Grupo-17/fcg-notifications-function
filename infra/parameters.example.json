@@ -9,10 +9,10 @@
       "value": "amqp://guest:guest@localhost:5672/"
     },
     "userCreatedQueue": {
-      "value": "UserCreated"
+      "value": "notifications-user-created"
     },
     "paymentProcessedQueue": {
-      "value": "PaymentProcessed"
+      "value": "notifications-payment-processed"
     }
   }
 }

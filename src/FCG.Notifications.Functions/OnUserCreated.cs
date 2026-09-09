@@ -1,26 +1,20 @@
 using FCG.Contracts.Events;
-using Microsoft.Azure.Functions.Worker;
+using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 
 namespace FCG.Notifications.Functions;
 
-/// <summary>
-/// Substitui o UserCreatedConsumer: dispara quando o UsersAPI publica UserCreatedEvent no RabbitMQ.
-/// </summary>
 public class OnUserCreated
 {
-    private readonly ILogger<OnUserCreated> _logger;
-
-    public OnUserCreated(ILogger<OnUserCreated> logger) => _logger = logger;
-
-    [Function(nameof(OnUserCreated))]
+    [FunctionName(nameof(OnUserCreated))]
     public void Run(
         [RabbitMQTrigger("%UserCreatedQueue%", ConnectionStringSetting = "RabbitMQConnection")]
-        string body)
+        string input,
+        ILogger log)
     {
-        var evt = MassTransitEnvelope.Deserialize<UserCreatedEvent>(body);
+        var evt = MassTransitEnvelope.Deserialize<UserCreatedEvent>(input);
 
-        _logger.LogInformation(
+        log.LogInformation(
             "[NOTIFICAÇÃO] ✉ E-mail de boas-vindas ENVIADO" +
             " | Para: {Email}" +
             " | Nome: {Nome}" +

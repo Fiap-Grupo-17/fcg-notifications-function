@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.Json;
 
 namespace FCG.Notifications.Functions;
@@ -12,6 +13,9 @@ internal static class MassTransitEnvelope
     {
         PropertyNameCaseInsensitive = true
     };
+
+    public static T Deserialize<T>(byte[] body) =>
+        Deserialize<T>(Encoding.UTF8.GetString(body));
 
     public static T Deserialize<T>(string body)
     {
