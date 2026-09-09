@@ -4,9 +4,6 @@ Azure Function (.NET 8 Isolated) que **substitui o container 24/7** da `fcg-noti
 
 É o entregável da Fase 3: *Migrar para Serverless*. O gatilho de negócio é a **fila do RabbitMQ**, não HTTP e não o Kong.
 
-## Por que não fica na mesma Azure do Kong
-
-O PDF permite **Kong ou Azure APIM ou AWS API Gateway**. O grupo escolheu **Kong local**. Só a Function é obrigatória em nuvem. Contas diferentes (sua de estudante vs. a do Woto) são válidas; depois replicam na conta que forem gravar o vídeo.
 
 ```
 Cliente HTTP ──► Kong local :8000 ──► UsersAPI / CatalogAPI
@@ -15,7 +12,7 @@ Cliente HTTP ──► Kong local :8000 ──► UsersAPI / CatalogAPI
                                       RabbitMQ
                                             │
                                             ▼
-                               Azure Function (sua conta)
+                               Azure Function
                                OnUserCreated
                                OnPaymentProcessed
 ```
@@ -117,3 +114,5 @@ Health após o publish: `https://<hostname>/api/health`
 - Letícia Lopes Ribeiro Vasconcelos
 - Marcelo Henrique Cornelis Rei
 - Vinícius Calixto Real
+- Raul Rodrigues
+- Woto Santana
