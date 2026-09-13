@@ -6,6 +6,9 @@
     "FUNCTIONS_INPROC_NET8_ENABLED": "1",
     "RabbitMQConnection": "amqp://guest:guest@localhost:5672/",
     "UserCreatedQueue": "notifications-user-created",
-    "PaymentProcessedQueue": "notifications-payment-processed"
+    "PaymentProcessedQueue": "notifications-payment-processed",
+    "Mongo__ConnectionString": "mongodb://localhost:27017",
+    "Mongo__Database": "fcg_notifications",
+    "Mongo__ProcessedEventsTtlDays": "0"
   }
 }

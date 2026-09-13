@@ -25,7 +25,11 @@ Cliente HTTP ──► Kong local :8000 ──► UsersAPI / CatalogAPI
 | `OnPaymentProcessed` | `notifications-payment-processed` | loga confirmação ou recusa de compra |
 | `Health` | HTTP `GET /api/health` | só para ping de deploy |
 
-A lógica é a mesma dos consumers da Fase 2. O MassTransit publica um **envelope**; o código lê a propriedade `message`.
+A lógica é a mesma dos consumers da Fase 2. O MassTransit publica um **envelope**; o código lê a propriedade `message` (camelCase; `decimal` chega como string, ex.: `"199.90"`).
+
+### Idempotência (MongoDB)
+
+Cada evento é deduplicado pelo `MessageId` do envelope, na coleção `fcg_notifications.processed_events` (índice único `(consumer, messageId)`, criado de forma lazy no primeiro evento). O fluxo é **checar → enviar → registrar depois**: numa reentrega do RabbitMQ para uma mensagem já concluída, o e-mail **não** é reenviado. Reaproveita a mesma abordagem das APIs (`fcg-catalog-api`/`fcg-payments-api`/`fcg-notifications-api`), mantendo o system-of-record em Postgres intacto.
 
 ## Pré-requisitos
 
@@ -50,9 +54,9 @@ az account show
 # Na pasta deste repositório
 copy src\FCG.Notifications.Functions\local.settings.json.example src\FCG.Notifications.Functions\local.settings.json
 
-# Suba a plataforma SEM o container antigo de notificações
+# Suba a plataforma SEM o container antigo de notificações (mongo = idempotência)
 cd ..\fcg-orchestration
-docker compose up -d postgres rabbitmq users-api catalog-api payments-api
+docker compose up -d postgres rabbitmq mongo users-api catalog-api payments-api
 
 # Volte e inicie a Function
 cd ..\fcg-notifications-function\src\FCG.Notifications.Functions
@@ -95,7 +99,8 @@ az deployment group create \
   --resource-group rg-fcg-notifications \
   --template-file infra/main.bicep \
   --parameters functionAppName=func-fcg-notifications-g17 \
-               rabbitMqConnection="amqps://USER:PASS@HOST/VHOST"
+               rabbitMqConnection="amqps://USER:PASS@HOST/VHOST" \
+               mongoConnectionString="mongodb://USER:PASS@HOST:PORT"
 
 cd src/FCG.Notifications.Functions
 func azure functionapp publish func-fcg-notifications-g17

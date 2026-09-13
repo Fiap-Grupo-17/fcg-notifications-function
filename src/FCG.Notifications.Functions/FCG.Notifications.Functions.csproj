@@ -9,6 +9,10 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="4.6.0" />
     <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.RabbitMQ" Version="2.1.0" />
+    <!-- Injeção de dependências no host in-process (FunctionsStartup) -->
+    <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.1.0" />
+    <!-- Idempotência de eventos consumidos (coleção processed_events) -->
+    <PackageReference Include="MongoDB.Driver" Version="3.0.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\fcg-contracts\src\FCG.Contracts\FCG.Contracts.csproj" />
