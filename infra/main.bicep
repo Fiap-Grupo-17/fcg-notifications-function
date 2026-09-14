@@ -14,6 +14,13 @@ param userCreatedQueue string = 'notifications-user-created'
 @description('MassTransit queue for PaymentProcessedEvent')
 param paymentProcessedQueue string = 'notifications-payment-processed'
 
+@description('MongoDB connection string for idempotency (processed_events). In Azure use Cosmos DB for MongoDB (API Mongo) or MongoDB Atlas — the compose "mongodb://localhost:27017" only works locally.')
+@secure()
+param mongoConnectionString string
+
+@description('MongoDB database name for the processed_events collection.')
+param mongoDatabase string = 'fcg_notifications'
+
 var storageAccountName = 'st${uniqueString(resourceGroup().id, functionAppName)}'
 var appInsightsName = 'appi-${functionAppName}'
 var hostingPlanName = 'plan-${functionAppName}'
@@ -101,6 +108,18 @@ resource functionApp 'Microsoft.Web/sites@2023-01-01' = {
         {
           name: 'PaymentProcessedQueue'
           value: paymentProcessedQueue
+        }
+        {
+          name: 'Mongo__ConnectionString'
+          value: mongoConnectionString
+        }
+        {
+          name: 'Mongo__Database'
+          value: mongoDatabase
+        }
+        {
+          name: 'Mongo__ProcessedEventsTtlDays'
+          value: '0'
         }
       ]
     }

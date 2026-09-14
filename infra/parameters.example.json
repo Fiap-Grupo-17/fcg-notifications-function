@@ -13,6 +13,12 @@
     },
     "paymentProcessedQueue": {
       "value": "notifications-payment-processed"
+    },
+    "mongoConnectionString": {
+      "value": "mongodb://localhost:27017"
+    },
+    "mongoDatabase": {
+      "value": "fcg_notifications"
     }
   }
 }
