@@ -116,10 +116,8 @@ Health após o publish: `https://<hostname>/api/health`
 - README da orquestração: Notifications = esta Function.
 - README de `fcg-notifications-api`: migrado para cá.
 
-## Grupo 17 — Pós-Tech FIAP
-
+## Grupo 17 — Pos-Tech FIAP
 - Letícia Lopes Ribeiro Vasconcelos
 - Marcelo Henrique Cornelis Rei
-- Vinícius Calixto Real
-- Raul Rodrigues
-- Woto Santana
+- Washington Santana dos Santos
+- Raul Hentz Rodrigues
